@@ -1,4 +1,4 @@
-export type ColumnType = 'hash' | 'author_name' | 'author_email' | 'file' | 'date' | 'head_message' | 'body_message'
+export type ColumnType = 'hash' | 'author_name' | 'author_email' | 'file' | 'date' | 'message' | 'body'
 
 export const columns: Array<{ name: ColumnType, type: any }> = [
 	{
@@ -14,19 +14,15 @@ export const columns: Array<{ name: ColumnType, type: any }> = [
 		type: String,
 	},
 	{
-		name: 'file',
-		type: String,
-	},
-	{
 		name: 'date',
 		type: [String, Number, Date],
 	},
 	{
-		name: 'head_message',
+		name: 'message',
 		type: String,
 	},
 	{
-		name: 'body_message',
+		name: 'body',
 		type: String,
 	},
 ]
