@@ -1,2 +1,5 @@
 # git-sql-js
-Search Git log by sql
+(WIP) Search Git log by sql
+
+![demo](/demo.png)
+
