@@ -1,0 +1,25 @@
+{
+	"name": "git-sql-js",
+	"version": "0.0.1",
+	"description": "",
+	"type": "module",
+	"main": "dist/index.js",
+	"exports": "./dist/index.js",
+	"import": {
+		"ramda": "./node_modules/ramda/es/index.js"
+	},
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "Jy <pureJy@163.com>",
+	"license": "MIT",
+	"dependencies": {
+		"node-sql-parser": "^4.7.0",
+		"ramda": "^0.29.0",
+		"simple-git": "^3.19.0"
+	},
+	"devDependencies": {
+		"@types/node": "^20.3.1",
+		"@types/ramda": "^0.29.2"
+	}
+}
