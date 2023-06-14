@@ -2,9 +2,9 @@
 (WIP) Search Git log by sql
 
 ```typescript
-// example/base.ts
+// example/base.js
 
-import { GitSqlLog } from '../source';
+import { GitSqlLog } from 'git-sql-log';
 
 const gitSql = new GitSqlLog({});
 
@@ -14,5 +14,5 @@ console.table(res)
 
 ```
 
-![demo](/demo.png)
+![demo](/example.png)
 
