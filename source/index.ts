@@ -24,12 +24,12 @@ class LogResult {
 	}
 }
 
-interface IGitSql {
+interface IGitSqlLog {
 	options: Partial<SimpleGitOptions>
 	query(query: string, from?: string, to?: string): void
 }
 
-export class GitSql implements IGitSql {
+export class GitSqlLog implements IGitSqlLog {
 	options: Partial<SimpleGitOptions>;
 	private client: SimpleGit;
 	private sqlParser = new SQLParser.Parser();
