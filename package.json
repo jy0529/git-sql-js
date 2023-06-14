@@ -1,6 +1,6 @@
 {
 	"name": "git-sql-log",
-	"version": "0.0.1",
+	"version": "0.1.0",
 	"description": "Search Git log by sql",
 	"type": "module",
 	"main": "dist/index.js",
