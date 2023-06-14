@@ -1,4 +1,4 @@
-import { GitSqlLog } from '../source';
+import { GitSqlLog } from '../dist/index.js';
 
 const gitSql = new GitSqlLog({});
 

@@ -1,4 +1,4 @@
-import { ColumnType, columns } from "./columns";
+import { ColumnType, columns } from "./columns.js";
 import SQLParser from 'node-sql-parser';
 import * as R from 'ramda';
 
@@ -8,7 +8,7 @@ interface IQuery {
 
 export class Query implements IQuery {
 	ast: SQLParser.Select
-	columns: ColumnType[]
+	columns: ColumnType[] = []
 	where: any
 
 	constructor(ast: SQLParser.Select) {

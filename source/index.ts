@@ -1,7 +1,7 @@
 import { simpleGit, SimpleGit, SimpleGitOptions } from 'simple-git'
 import SQLParser from 'node-sql-parser';
-import { Query } from './query';
-
+import { Query } from './query.js';
+// @ts-ignore
 interface LogResult {
 	hash: string
 	date: Date
@@ -11,7 +11,7 @@ interface LogResult {
 	head_message?: string
 	body_message?: string
 }
-
+// @ts-ignore
 class LogResult {
 	constructor(result: LogResult) {
 		this.hash = result.hash;
