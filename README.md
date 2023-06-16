@@ -1,4 +1,4 @@
-# git-sql-js
+# git-sql-log 
 (WIP) Search Git log by sql
 
 ```typescript
@@ -6,9 +6,9 @@
 
 import { GitSqlLog } from 'git-sql-log';
 
-const gitSql = new GitSqlLog({});
+const gitSqlLog = new GitSqlLog({});
 
-const res = await gitSql.query('select * from log')
+const res = await gitSqlLog.query('select * from log')
 
 console.table(res)
 
