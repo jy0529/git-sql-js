@@ -29,14 +29,14 @@ interface IGitSqlLog {
 	query(query: string, from?: string, to?: string): void
 }
 
-export class GitSqlLog implements IGitSqlLog {
+export class GitSqlClient implements IGitSqlLog {
 	options: Partial<SimpleGitOptions>;
 	private client: SimpleGit;
 	private sqlParser = new SQLParser.Parser();
 
-	constructor(options: Partial<SimpleGitOptions>) {
-		this.options = options;
-		this.client = simpleGit(options);
+	constructor(options?: Partial<SimpleGitOptions>) {
+		this.options = options ?? {};
+		this.client = simpleGit(this.options);
 	}
 
 	async query(query: string, from?: string, to?: string) {
