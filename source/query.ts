@@ -18,7 +18,46 @@ export class Query implements IQuery {
 	}
 
 	initWhere() {
-		// TODO
+		const where = this.ast.where
+
+		function recursive(ASTNode: any): any {
+			const left = ASTNode.left ? recursive(ASTNode.left) : null
+			const right = ASTNode.right ? recursive(ASTNode.right) : null
+
+			if (ASTNode.type === 'binary_expr') {
+				if (ASTNode.operator === 'AND') {
+					return R.allPass([
+						left,
+						right,
+					])
+				} else if (ASTNode.operator === 'OR') {
+					return R.anyPass(
+						[
+							left,
+							right,
+						]
+					)
+				} else if (ASTNode.operator === '=') {
+					return R.propEq(right.value, left.value)
+				} else {
+					// TODO
+				}
+			} else {
+				if (ASTNode.type === 'column_ref') {
+					return {
+						type: ASTNode.type,
+						value: ASTNode.column,
+					}
+				} else {
+					return {
+						type: ASTNode.type,
+						value: ASTNode.value,
+					}
+				}
+			}
+		}
+
+		this.where = recursive(where);
 	}
 
 	initColumns() {
@@ -34,6 +73,8 @@ export class Query implements IQuery {
 
 	find(data: any) {
 		return R.pipe(
+			// @ts-ignore
+			R.filter(this.where),
 			R.map(R.pickAll(this.columns)),
 		)(data)
 	}
