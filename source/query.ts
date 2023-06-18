@@ -1,11 +1,11 @@
 import { ColumnType, columns } from "./columns";
 import SQLParser from 'node-sql-parser';
 import * as R from 'ramda';
+import { isDate, isAfter, isEqual, isBefore, parseISO } from 'date-fns'
 
 interface IQuery {
 	find(data: any): any
 }
-
 export class Query implements IQuery {
 	ast: SQLParser.Select
 	columns: ColumnType[] = []
@@ -24,6 +24,12 @@ export class Query implements IQuery {
 			this.where = R.always(true)
 			return
 		}
+
+		const CompareActionMapping = new Map<string, Function>()
+		CompareActionMapping.set('>', greaterThan)
+		CompareActionMapping.set('>=', greaterThanOrEqual)
+		CompareActionMapping.set('<', lessThan)
+		CompareActionMapping.set('<=', lessThanOrEqual)
 
 		function recursive(ASTNode: any): any {
 			const left = ASTNode.left ? recursive(ASTNode.left) : null
@@ -44,9 +50,10 @@ export class Query implements IQuery {
 					)
 				} else if (ASTNode.operator === '=') {
 					return R.propEq(right.value, left.value)
-				} else {
-					// TODO
-				}
+				} else if (CompareActionMapping.has(ASTNode.operator)) {
+					return R.propSatisfies((x) => {
+						return (CompareActionMapping.get(ASTNode.operator) as Function)(x, right.value)
+					}, left.value)}
 			} else {
 				if (ASTNode.type === 'column_ref') {
 					return {
@@ -84,4 +91,42 @@ export class Query implements IQuery {
 		)(data)
 	}
 
+}
+
+/**
+ *
+ * Compare Functions
+ *
+ */
+
+function greaterThan(x1: any, x2: any): boolean {
+	if (isDate(parseISO(x1)) && isDate(parseISO(x2))) {
+		return isAfter(new Date(x1), new Date(x2))
+	} else {
+		return x1 > x2
+	}
+}
+
+function greaterThanOrEqual(x1: any, x2: any):boolean {
+	if (isDate(parseISO(x1)) && isDate(parseISO(x2))) {
+		return greaterThan(x1, x2) || isEqual(new Date(x1), new Date(x2))
+	} else {
+		return x1 >= x2
+	}
+}
+
+function lessThan(x1:any, x2:any): boolean {
+	if (isDate(parseISO(x1)) && isDate(parseISO(x2))) {
+		return isBefore(new Date(x1), new Date(x2))
+	} else {
+		return x1 < x2
+	}
+}
+
+function lessThanOrEqual(x1:any, x2:any): boolean {
+	if (isDate(parseISO(x1)) && isDate(parseISO(x2))) {
+		return lessThan(x1, x2) || isEqual(new Date(x1), new Date(x2))
+	} else {
+		return x1 <= x2
+	}
 }

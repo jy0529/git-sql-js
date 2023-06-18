@@ -12,7 +12,7 @@ interface ILogResult {
 	body?: string
 }
 
-export class LogResult implements ILogResult {
+export class QueryResult implements ILogResult {
 	hash: string
 	date: Date
 	files: string | string[]
@@ -47,7 +47,7 @@ export class GitSqlClient implements IGitSqlLog {
 		this.client = simpleGit(this.options);
 	}
 
-	async query(query: string, from?: string, to?: string) {
+	async query(query: string, from?: string, to?: string): Promise<QueryResult[]> {
 		const ast = this.sqlParser.astify(query) as SQLParser.Select
 
 		const result = await this.client.log({
@@ -59,6 +59,6 @@ export class GitSqlClient implements IGitSqlLog {
 		const all = result.all
 
 		const queryInstance = new Query(ast)
-		return queryInstance.find(all)
+		return queryInstance.find(all) as QueryResult[]
 	}
 }
