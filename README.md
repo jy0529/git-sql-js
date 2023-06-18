@@ -1,14 +1,25 @@
 # git-sql-log 
-(WIP) Search Git log by sql
+Search Git log by SQL
+
+## features
+- [x] select *
+
+- [x] select column1, column2
+
+- [x] where and or
+
+- [x] order by asc desc
+
+- [x] limit N
 
 ```typescript
 // example/base.js
 
-import { GitSqlLog } from 'git-sql-log';
+import { GitSqlClient } from 'git-sql-log';
 
-const gitSqlLog = new GitSqlLog({});
+const gitSqlClient = new GitSqlClient({});
 
-const res = await gitSqlLog.query('select * from log')
+const res = await gitSqlClient.query('select * from log')
 
 console.table(res)
 
