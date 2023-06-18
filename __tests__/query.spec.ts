@@ -1,4 +1,5 @@
 import { GitSqlClient } from '../source/index'
+import { lessThan } from '../source/query'
 
 describe('select', () => {
 	const client = new GitSqlClient()
@@ -62,5 +63,16 @@ describe('select', () => {
 		expect(result.length).toBe(0)
 	})
 
+	test('limit', async () => {
+		const result = await client.query("select * from log limit 3")
+		expect(result.length).toBe(3)
+	})
+
+	test('order by', async () => {
+		const result = await client.query("select * from log order by date asc limit 3")
+		expect(result.length).toBe(3)
+		expect(lessThan(result[0]?.date, result[1]?.date)).toBe(true)
+		expect(lessThan(result[1]?.date, result[2]?.date)).toBe(true)
+	})
 
 })

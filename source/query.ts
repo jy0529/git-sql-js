@@ -10,11 +10,15 @@ export class Query implements IQuery {
 	ast: SQLParser.Select
 	columns: ColumnType[] = []
 	where: any
+	limit: number = Infinity
+	orderBy: any
 
 	constructor(ast: SQLParser.Select) {
 		this.ast = ast
-		this.initColumns();
-		this.initWhere();
+		this.initColumns()
+		this.initWhere()
+		this.initLimit()
+		this.initOrderBy()
 	}
 
 	initWhere() {
@@ -83,11 +87,45 @@ export class Query implements IQuery {
 
 	}
 
+	initLimit() {
+		const limitAST = this.ast.limit
+		if (limitAST) {
+			this.limit = limitAST.value[0]?.value ?? Infinity
+		}
+	}
+
+	initOrderBy() {
+		const orderByAST = this.ast.orderby ?? []
+
+		const comparators = []
+		for(let ast of orderByAST) {
+			let column = ''
+			if (ast.expr.type === 'column_ref') {
+				column = ast.expr.column
+			}
+			if (ast.type === 'ASC') {
+				comparators.push((a: any, b: any) => {
+					if (a?.[column] === b?.[column]) return 0
+					return lessThan(a?.[column], b?.[column]) ? -1 : 1
+				})
+			} else {
+				comparators.push((a: any, b: any) => {
+					if (a?.[column] === b?.[column]) return 0
+					return greaterThan(a?.[column], b?.[column]) ? -1 : 1
+				})
+			}
+		}
+
+		this.orderBy = comparators
+	}
+
 	find(data: any) {
 		return R.pipe(
 			// @ts-ignore
 			R.filter(this.where),
 			R.map(R.pickAll(this.columns)),
+			R.sortWith(this.orderBy),
+			R.take(this.limit),
 		)(data)
 	}
 
@@ -99,7 +137,7 @@ export class Query implements IQuery {
  *
  */
 
-function greaterThan(x1: any, x2: any): boolean {
+export function greaterThan(x1: any, x2: any): boolean {
 	if (isDate(parseISO(x1)) && isDate(parseISO(x2))) {
 		return isAfter(new Date(x1), new Date(x2))
 	} else {
@@ -107,7 +145,7 @@ function greaterThan(x1: any, x2: any): boolean {
 	}
 }
 
-function greaterThanOrEqual(x1: any, x2: any):boolean {
+export function greaterThanOrEqual(x1: any, x2: any):boolean {
 	if (isDate(parseISO(x1)) && isDate(parseISO(x2))) {
 		return greaterThan(x1, x2) || isEqual(new Date(x1), new Date(x2))
 	} else {
@@ -115,7 +153,7 @@ function greaterThanOrEqual(x1: any, x2: any):boolean {
 	}
 }
 
-function lessThan(x1:any, x2:any): boolean {
+export function lessThan(x1:any, x2:any): boolean {
 	if (isDate(parseISO(x1)) && isDate(parseISO(x2))) {
 		return isBefore(new Date(x1), new Date(x2))
 	} else {
@@ -123,7 +161,7 @@ function lessThan(x1:any, x2:any): boolean {
 	}
 }
 
-function lessThanOrEqual(x1:any, x2:any): boolean {
+export function lessThanOrEqual(x1:any, x2:any): boolean {
 	if (isDate(parseISO(x1)) && isDate(parseISO(x2))) {
 		return lessThan(x1, x2) || isEqual(new Date(x1), new Date(x2))
 	} else {
