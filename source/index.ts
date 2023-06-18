@@ -1,26 +1,34 @@
 import { simpleGit, SimpleGit, SimpleGitOptions } from 'simple-git'
 import SQLParser from 'node-sql-parser';
-import { Query } from './query.js';
-// @ts-ignore
-interface LogResult {
+import { Query } from './query';
+
+interface ILogResult {
 	hash: string
 	date: Date
 	files: string | string[]
 	author_name: string
 	author_email?: string
-	head_message?: string
-	body_message?: string
+	message?: string
+	body?: string
 }
-// @ts-ignore
-class LogResult {
-	constructor(result: LogResult) {
+
+export class LogResult implements ILogResult {
+	hash: string
+	date: Date
+	files: string | string[]
+	author_name: string
+	author_email: string | undefined
+	message: string | undefined;
+	body: string | undefined;
+
+	constructor(result: ILogResult) {
 		this.hash = result.hash;
 		this.date = result.date;
 		this.files = result.files;
 		this.author_name = result.author_name;
 		this.author_email = result.author_email;
-		this.head_message = result.head_message;
-		this.body_message = result.body_message;
+		this.message = result.message;
+		this.body = result.body;
 	}
 }
 

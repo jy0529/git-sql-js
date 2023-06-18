@@ -1,4 +1,4 @@
-import { ColumnType, columns } from "./columns.js";
+import { ColumnType, columns } from "./columns";
 import SQLParser from 'node-sql-parser';
 import * as R from 'ramda';
 
@@ -19,6 +19,11 @@ export class Query implements IQuery {
 
 	initWhere() {
 		const where = this.ast.where
+
+		if (!where) {
+			this.where = R.always(true)
+			return
+		}
 
 		function recursive(ASTNode: any): any {
 			const left = ASTNode.left ? recursive(ASTNode.left) : null
